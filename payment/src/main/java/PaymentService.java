@@ -82,7 +82,7 @@ public class PaymentService {
 			Channel channel = connection.createChannel();
 			channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 			channel.basicPublish("", QUEUE_NAME, null, msg.getBytes());
-			logger.info(" [x] Sent '" + msg + "'");
+			logger.info(" [x] Sent '" + msg +"'");
 			channel.close();
 			connection.close();
 		} catch (IOException | TimeoutException e) {
