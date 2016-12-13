@@ -14,7 +14,10 @@ public class FinancialFront {
 	//private final static String QUEUE_NAME = "payment";
 	public static void main(final String[] args) {
 		
-		port(8102);
+		String frontPort = System.getenv("FrontPort");
+		if(null != frontPort){
+			port(Integer.parseInt(frontPort));
+		}
         get("/payment", (request, response) -> {
             Map<String, Object> model = new HashMap<>();
             model.put("service", "Payment");
