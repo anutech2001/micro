@@ -14,6 +14,8 @@
 CREATE DATABASE IF NOT EXISTS `payment` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `payment`;
 
+CREATE USER 'testuser2'@'localhost' IDENTIFIED BY '1234asdf';
+GRANT ALL PRIVILEGES ON * . * TO 'testuser2'@'localhost';
 
 -- Dumping structure for table payment.payment_transaction
 CREATE TABLE IF NOT EXISTS `payment_transaction` (
