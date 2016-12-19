@@ -2,9 +2,10 @@ package com.ktb.payment.service;
 
 import static spark.Spark.post;
 import static spark.Spark.port;
-
+import static spark.Spark.get;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
@@ -31,8 +32,17 @@ public class PaymentService {
 		if(null != paymentPort){
 			port(Integer.parseInt(paymentPort));
 		}
-		post("/payment", (request, response) -> {
+		get("/payment/:fromAccountNumber/:amount/:storeCode/:channel","application/json", (request, response) -> {
+			String param = "fromAcct="+request.params(":fromAccountNumber")
+							+"&amount="+request.params(":amount")
+							+"&storeCode="+request.params(":storeCode")
+							+"&channel="+request.params(":channel");
+			List<PaymentTransaction> list = TransactionMgnt.findPaymentTransactions(param);
+//			PaymentTransaction paymentTransaction = TransactionMgnt.findPaymentTransaction(param);
+			return list;
+		}, new JsonTransformer());
 		
+		post("/payment", (request, response) -> {
 			// validate input data
 			logger.info(PAYMENT + " received payment transaction - '" + request.body() + "'");
 			logger.info(PAYMENT + " validating transcation data.");

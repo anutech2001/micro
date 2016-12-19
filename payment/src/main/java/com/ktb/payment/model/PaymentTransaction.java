@@ -12,9 +12,12 @@ import javax.persistence.Table;
 public class PaymentTransaction {
 	@Column(name="from_account_number")
 	private String fromAccountNumber;
+	
 	private double amount;
+	
 	@Column(name="store_code")
 	private String storeCode;
+	
 	@Column(name="trx_date_time")
 	private Date trxDateTime;
 	//TODO add trxStatus
@@ -28,15 +31,22 @@ public class PaymentTransaction {
 	//TODO add createdBy
 	@Column(name="trx_status")
 	private String trxStatus;
+	
+	@Column(name="channel")
 	private String channel;
+	
 	@Column(name="created_by")
 	private String createdBy;
+	
 	@Column(name="created_date")
 	private Date createdDate;
+	
 	@Column(name="updated_by")
 	private String updatedBy;
+	
 	@Column(name="updated_date")
 	private Date updatedDate;
+	
 	@Id
 	private String id;
 	
@@ -105,6 +115,13 @@ public class PaymentTransaction {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	@Override
+	public String toString() {
+		return "PaymentTransaction [fromAccountNumber=" + fromAccountNumber + ", amount=" + amount + ", storeCode="
+				+ storeCode + ", trxDateTime=" + trxDateTime + ", trxStatus=" + trxStatus + ", channel=" + channel
+				+ ", createdBy=" + createdBy + ", createdDate=" + createdDate + ", updatedBy=" + updatedBy
+				+ ", updatedDate=" + updatedDate + ", id=" + id + "]";
 	}
 
 }
