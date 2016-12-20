@@ -1,7 +1,9 @@
 package com.ktb.payment.transaction;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +70,8 @@ public class TransactionMgnt {
 	}
 
 	public static PaymentTransaction createPaymentTransaction(String messageBody){
-		java.util.Date dateTime = Calendar.getInstance().getTime();
+//		java.util.Date dateTime = Calendar.getInstance().getTime();
+		java.util.Date dateTime = new Date();
 		PaymentTransaction pt = getPaymentTransaction(messageBody);
 		pt.setTrxDateTime(dateTime);
 		pt.setId(String.valueOf(UUID.randomUUID()));
