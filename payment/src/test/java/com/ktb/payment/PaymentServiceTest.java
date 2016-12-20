@@ -34,7 +34,7 @@ public class PaymentServiceTest {
 		payment.setChannel("FRONT");
 	}
 
-//	@Test
+	@Test
 	public void postDataPayment() {
 		// init data test
 		logger.info("testPostDataPayment : "+payment.toString());
@@ -48,36 +48,40 @@ public class PaymentServiceTest {
 		tmp = tmp.substring(0,tmp.indexOf("</label>"));
 		id = tmp.replace("<label for=\"id\">Id: ", "");
 		logger.info("id >>> "+id);
+		
+//		checkStateRecv();
+//		checkStateComp();
 	}
 
 	@Test
 	public void checkStateRecv() {
-		id = "7a27c6f8-05f2-458e-ae6e-c41cae117f94";
-		logger.info("checkStateRecv : id [ "+id+" ]");
-		Response response = given().when().get("/"+id).then()
-				.statusCode(200)
-//				.body("id", equalTo(id.toString()))
-//				.body("fromAccountNumber", equalTo(payment.getFromAccountNumber()))
-//				.body("amount", is(payment.getAmount()))
-//				.body("storeCode", equalTo(payment.getStoreCode()))
-//				.body("channel", equalTo(payment.getChannel()))
-//				.assertThat()
-				.extract().response();
-		
-		JsonPath jp = new JsonPath(response.asString());
-		Assert.assertEquals("id from API doesn't match.",id, jp.get("id").toString());
-		Assert.assertEquals("fromAccountNumber from API doesn't match.",payment.getFromAccountNumber(), jp.get("fromAccountNumber").toString());
-//		Assert.assertEquals("amount from API doesn't match.",payment.getAmount(), Double.valueOf(jp.get("amount")));
-		Assert.assertEquals("storeCode from API doesn't match.",payment.getStoreCode(), jp.get("storeCode").toString());
-		Assert.assertEquals("channel from API doesn't match.",payment.getChannel(), jp.get("channel").toString());
-		Assert.assertEquals("trxStatus from API doesn't match.","RECV", jp.get("trxStatus").toString());
+		try {
+			logger.info("checkStateRecv : id [ "+id+" ]");
+			Response response = given().when().get("/"+id).then()
+//					.body("id", equalTo(id.toString()))
+//					.body("fromAccountNumber", equalTo(payment.getFromAccountNumber()))
+//					.body("amount", is(payment.getAmount()))
+//					.body("storeCode", equalTo(payment.getStoreCode()))
+//					.body("channel", equalTo(payment.getChannel()))
+					.statusCode(200).extract().response();
+			
+			JsonPath jp = new JsonPath(response.asString());
+			Assert.assertEquals("id from API doesn't match.",id, jp.get("id").toString());
+			Assert.assertEquals("fromAccountNumber from API doesn't match.",payment.getFromAccountNumber(), jp.get("fromAccountNumber").toString());
+//			Assert.assertEquals("amount from API doesn't match.",payment.getAmount(), Double.valueOf(jp.get("amount")));
+			Assert.assertEquals("storeCode from API doesn't match.",payment.getStoreCode(), jp.get("storeCode").toString());
+			Assert.assertEquals("channel from API doesn't match.",payment.getChannel(), jp.get("channel").toString());
+			Assert.assertEquals("trxStatus from API doesn't match.","RECV", jp.get("trxStatus").toString());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
 	public void checkStateComp() {
 		try {
-			Thread.sleep((long) (3000));
-			id = "7a27c6f8-05f2-458e-ae6e-c41cae117f94";
+			Thread.sleep((long) (5000));
 			logger.info("checkStateComp : id [ "+id+" ]");
 			Response response = given().when().get("/"+id).then()
 //					.body("fromAccountNumber", equalTo(payment.getFromAccountNumber()))
@@ -90,7 +94,7 @@ public class PaymentServiceTest {
 			JsonPath jp = new JsonPath(response.asString());
 			Assert.assertEquals("id from API doesn't match.",id, jp.get("id").toString());
 			Assert.assertEquals("fromAccountNumber from API doesn't match.",payment.getFromAccountNumber(), jp.get("fromAccountNumber").toString());
-//			Assert.assertEquals("amount from API doesn't match.",payment.getAmount(), Double.valueOf(jp.get("amount")));
+//			Assert.assertEquals("amount from API doesn't match.",Double.valueOf(payment.getAmount()), Double.valueOf(jp.get("amount")),0.0);
 			Assert.assertEquals("storeCode from API doesn't match.",payment.getStoreCode(), jp.get("storeCode").toString());
 			Assert.assertEquals("channel from API doesn't match.",payment.getChannel(), jp.get("channel").toString());
 			Assert.assertEquals("trxStatus from API doesn't match.","COMP", jp.get("trxStatus").toString());

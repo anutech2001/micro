@@ -1,6 +1,8 @@
 package com.ktb.payment.transaction;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -9,11 +11,22 @@ import javax.persistence.Persistence;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.ktb.payment.model.PaymentTransaction;
+import com.ktb.payment.paymentgw.DBConfig;
 
 public class TransactionMgnt {
 	static final String UNIT_NAME = "MariaDB-JPA";
 	static final String STATUS_COMP = "COMP";
 	static final String GATEWAY = "GATEWAY";
+	static Map<String, String> jpaProperties;
+	
+	static {
+		jpaProperties = new HashMap<String, String>();
+		jpaProperties.put("javax.persistence.jdbc.user", DBConfig.getDbUser());
+		jpaProperties.put("javax.persistence.jdbc.password", DBConfig.getDbPassword());
+		jpaProperties.put("javax.persistence.jdbc.url", "jdbc:mariadb://"+DBConfig.getDbHost() + 
+																		":" + DBConfig.getDbPort() +
+																		"/" + DBConfig.getDbName());				
+	}
 	
 	public static void updatePaymentTransaction(String message){
 		EntityManagerFactory emf = null;
