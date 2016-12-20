@@ -29,7 +29,18 @@ public class TransactionMgnt {
 	private final static Logger logger = LoggerFactory.getLogger(TransactionMgnt.class);
 	static final String STATUS_RECV = "RECV";
 	static final String UNIT_NAME = "MariaDB-JPA";
-
+	static Map<String, String> jpaProperties;
+	
+	
+	static {
+		jpaProperties = new HashMap<String, String>();
+		jpaProperties.put("javax.persistence.jdbc.user", DBConfig.getDbUser());
+		jpaProperties.put("javax.persistence.jdbc.password", DBConfig.getDbPassword());
+		jpaProperties.put("javax.persistence.jdbc.url", "jdbc:mariadb://"+DBConfig.getDbHost() + 
+																		":" + DBConfig.getDbPort() +
+																		"/" + DBConfig.getDbName());				
+	}
+	
 	public static String encode(Object obj) {
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonStr = null;
@@ -82,7 +93,7 @@ public class TransactionMgnt {
 		EntityManagerFactory emf = null;
 		EntityManager em = null;
 		try {
-			emf = Persistence.createEntityManagerFactory(UNIT_NAME);
+			emf = Persistence.createEntityManagerFactory(UNIT_NAME, jpaProperties);
 			em = emf.createEntityManager();
 			em.getTransaction().begin( );
 			
@@ -104,8 +115,9 @@ public class TransactionMgnt {
 		PaymentTransaction pt = getPaymentTransaction(messageBody);
 		EntityManagerFactory emf = null;
 		EntityManager em = null;
+
 		try {
-			emf = Persistence.createEntityManagerFactory(UNIT_NAME);
+			emf = Persistence.createEntityManagerFactory(UNIT_NAME, jpaProperties);
 			em = emf.createEntityManager();
 			StringBuilder sql = new StringBuilder();
 			sql.append(" select a from PaymentTransaction a ");
