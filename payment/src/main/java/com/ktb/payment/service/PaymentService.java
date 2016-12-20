@@ -11,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ktb.payment.model.PaymentTransaction;
+import com.ktb.payment.transaction.DBConfig;
 import com.ktb.payment.transaction.TransactionMgnt;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -26,11 +27,27 @@ public class PaymentService {
 	private final static String PAYMENT_HOST = "RabbitHost";
 	private final static String PAYMENT_USER = "guest";
 	private final static String PAYMENT_PASS = "guest";
+	private final static String PAYMENT_DB_HOST = "PAYMENT_DB_HOST";
+	private final static String PAYMENT_DB_NAME = "PAYMENT_DB_NAME";
+	private final static String PAYMENT_DB_PORT = "PAYMENT_DB_PORT";
+	private final static String PAYMENT_DB_USER = "PAYMENT_DB_USER";
+	private final static String PAYMENT_DB_PASS = "PAYMENT_DB_PASS";
+	
 
 	public static void main(final String[] args) {
+		logger.info("==============================================================");
+		logger.info("Payment Config: Database Host = " + System.getenv(PAYMENT_DB_HOST));
+		logger.info("                Database Name = " + System.getenv(PAYMENT_DB_NAME));
+		logger.info("                Database Port = " + System.getenv(PAYMENT_DB_PORT));
+		logger.info("                Database User = " + System.getenv(PAYMENT_DB_USER));
+		logger.info("==============================================================");
+		new DBConfig(System.getenv(PAYMENT_DB_HOST),System.getenv(PAYMENT_DB_NAME),
+				     System.getenv(PAYMENT_DB_PORT),System.getenv(PAYMENT_DB_USER),
+					 System.getenv(PAYMENT_DB_PASS));
+		
 		String paymentPort = System.getenv(PAYMENT_PORT);
 		if(null != paymentPort){
-			port(Integer.parseInt(paymentPort));
+			port(Integer.parseInt(paymentPort)); 
 		}
 		get("/payment/:id","application/json", (request, response) -> {
 			PaymentTransaction paymentTransaction = TransactionMgnt.findPaymentTransaction(request.params("id"));
