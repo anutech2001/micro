@@ -22,6 +22,11 @@
   </div>	
   <div class="row">
    <div class="col-xs-6">
+    <label for="id">Id: ${paymentTrx.id}</label>
+   </div>
+  </div>
+  <div class="row">
+   <div class="col-xs-6">
     <label for="fromAcct">Account Number: ${paymentTrx.FromAccountNumber}</label>
    </div>
   </div>

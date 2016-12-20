@@ -32,14 +32,9 @@ public class PaymentService {
 		if(null != paymentPort){
 			port(Integer.parseInt(paymentPort));
 		}
-		get("/payment/:fromAccountNumber/:amount/:storeCode/:channel","application/json", (request, response) -> {
-			String param = "fromAcct="+request.params(":fromAccountNumber")
-							+"&amount="+request.params(":amount")
-							+"&storeCode="+request.params(":storeCode")
-							+"&channel="+request.params(":channel");
-			List<PaymentTransaction> list = TransactionMgnt.findPaymentTransactions(param);
-//			PaymentTransaction paymentTransaction = TransactionMgnt.findPaymentTransaction(param);
-			return list;
+		get("/payment/:id","application/json", (request, response) -> {
+			PaymentTransaction paymentTransaction = TransactionMgnt.findPaymentTransaction(request.params("id"));
+			return paymentTransaction;
 		}, new JsonTransformer());
 		
 		post("/payment", (request, response) -> {

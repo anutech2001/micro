@@ -132,11 +132,20 @@ public class TransactionMgnt {
 		return paymentTransactions;
 	}
 	
-	public static PaymentTransaction findPaymentTransaction(String messageBody){
+	public static PaymentTransaction findPaymentTransaction(String id){
 		PaymentTransaction transaction = null;
-		List<PaymentTransaction> list = findPaymentTransactions(messageBody);
-		if(null != list && list.size() > 0){
-			transaction = list.get(0);
+		EntityManagerFactory emf = null;
+		EntityManager em = null;
+		try {
+			emf = Persistence.createEntityManagerFactory(UNIT_NAME);
+			em = emf.createEntityManager();
+			transaction = em.find(PaymentTransaction.class, id);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			em.close();
+			emf.close();
 		}
 		return transaction;
 	}
