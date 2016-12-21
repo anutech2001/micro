@@ -22,6 +22,11 @@
   </div>	
   <div class="row">
    <div class="col-xs-6">
+    <label for="id">Id: ${paymentTrx.id}</label>
+   </div>
+  </div>
+  <div class="row">
+   <div class="col-xs-6">
     <label for="fromAcct">Account Number: ${paymentTrx.FromAccountNumber}</label>
    </div>
   </div>
@@ -42,8 +47,8 @@
   </div>
   <div class="row">
    <div class="col-xs-6">
-     <!--<a class="btn btn-default" href="http://efinancial.inv:8102/payment" style="background-color: #F89406;" role="button">Make another Payment</a>-->
-     <a class="btn btn-default" href="http://127.0.0.1:8102/payment" style="background-color: #F89406;" role="button">Make another Payment</a>
+     <!--<a class="btn btn-default" href="http://efinancial.in:8102/payment" style="background-color: #F89406;" role="button">Make another Payment</a>-->
+     <a class="btn btn-default" href="http://efinancial.in:4567/payment" style="background-color: #F89406;" role="button">Make another Payment</a>
    </div>
   </div>
   <div class="row">
