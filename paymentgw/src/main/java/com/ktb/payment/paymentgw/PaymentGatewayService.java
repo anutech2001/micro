@@ -3,8 +3,9 @@ package com.ktb.payment.paymentgw;
 import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.ktb.payment.event.EventConfig;
-import com.ktb.payment.event.EventHandler;
+
+import com.ktb.payment.event.handler.EventConfig;
+import com.ktb.payment.event.handler.EventHandler;
 
 public class PaymentGatewayService {
 	private final static Logger logger = LoggerFactory.getLogger(PaymentGatewayService.class);
@@ -22,13 +23,13 @@ public class PaymentGatewayService {
 			throws java.io.IOException, java.lang.InterruptedException, TimeoutException {
 
 		logger.info("==============================================================");
-		logger.info("Payment Config: Database Host = " + System.getenv(PAYMENT_DB_HOST));
-		logger.info("                Database Name = " + System.getenv(PAYMENT_DB_NAME));
-		logger.info("                Database Port = " + System.getenv(PAYMENT_DB_PORT));
-		logger.info("                Database User = " + System.getenv(PAYMENT_DB_USER));
-		logger.info("                RabbitMQ Host = " + System.getenv(RABBITMQ_HOST));
-		logger.info("                RabbitMQ Port = " + System.getenv(RABBITMQ_PORT));
-		logger.info("                RabbitMQ User = " + System.getenv(RABBITMQ_USER));
+		logger.info("Payment Gateway Config: Database Host = " + System.getenv(PAYMENT_DB_HOST));
+		logger.info("                		 Database Name = " + System.getenv(PAYMENT_DB_NAME));
+		logger.info("                		 Database Port = " + System.getenv(PAYMENT_DB_PORT));
+		logger.info("                		 Database User = " + System.getenv(PAYMENT_DB_USER));
+		logger.info("                		 RabbitMQ Host = " + System.getenv(RABBITMQ_HOST));
+		logger.info("                		 RabbitMQ Port = " + System.getenv(RABBITMQ_PORT));
+		logger.info("                		 RabbitMQ User = " + System.getenv(RABBITMQ_USER));
 		logger.info("==============================================================");
 		new DBConfig(System.getenv(PAYMENT_DB_HOST),System.getenv(PAYMENT_DB_NAME),
 				     System.getenv(PAYMENT_DB_PORT),System.getenv(PAYMENT_DB_USER),
@@ -38,8 +39,7 @@ public class PaymentGatewayService {
 		new EventConfig(System.getenv(RABBITMQ_HOST), System.getenv(RABBITMQ_PORT), System.getenv(RABBITMQ_USER),
 				System.getenv(RABBITMQ_PASS));
 		
-		// publish an event
-		logger.info(" pay to other organiztion, sent event to Payment Gateway Service. ");
-		EventHandler.paymentTo3rdCreatedEvent();
+		// wait for an event
+		EventHandler.handlePaymentTo3rdCreatedEvent();
 	}
 }
