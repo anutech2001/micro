@@ -29,6 +29,7 @@ public class EventHandler {
 			connection = factory.newConnection();
 			Channel channel = connection.createChannel();
 			channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+			logger.info(" [*] Waiting for messages. To exit press CTRL+C");
 			Consumer consumer = new DefaultConsumer(channel) {
 				@Override
 				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
