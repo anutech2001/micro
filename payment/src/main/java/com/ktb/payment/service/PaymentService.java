@@ -1,38 +1,40 @@
 package com.ktb.payment.service;
 
-import static spark.Spark.post;
-import static spark.Spark.port;
 import static spark.Spark.get;
-import java.io.IOException;
+import static spark.Spark.port;
+import static spark.Spark.post;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.ktb.payment.event.EventConfig;
+import com.ktb.payment.event.EventHandler;
 import com.ktb.payment.model.PaymentTransaction;
 import com.ktb.payment.transaction.DBConfig;
 import com.ktb.payment.transaction.TransactionMgnt;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
+
 import spark.ModelAndView;
 import spark.template.velocity.VelocityTemplateEngine;;
 
 public class PaymentService {
 	private final static Logger logger = LoggerFactory.getLogger(PaymentService.class);
-	private final static String QUEUE_NAME = "paymentTo3rdCreated";
 	private final static String PAYMENT = "Payment Service:";
-	private final static String PAYMENT_PORT = "PaymentPort";
-	private final static String PAYMENT_HOST = "RabbitHost";
-	private final static String PAYMENT_USER = "guest";
-	private final static String PAYMENT_PASS = "guest";
+	private final static String PAYMENT_PORT = "PAYMENT_PORT";
+
+	private final static String RABBITMQ_HOST = "RABBITMQ_HOST";
+	private final static String RABBITMQ_PORT = "RABBITMQ_PORT";
+	private final static String RABBITMQ_USER = "RABBITMQ_USER";
+	private final static String RABBITMQ_PASS = "RABBITMQ_PASS";
+
 	private final static String PAYMENT_DB_HOST = "PAYMENT_DB_HOST";
 	private final static String PAYMENT_DB_NAME = "PAYMENT_DB_NAME";
 	private final static String PAYMENT_DB_PORT = "PAYMENT_DB_PORT";
 	private final static String PAYMENT_DB_USER = "PAYMENT_DB_USER";
 	private final static String PAYMENT_DB_PASS = "PAYMENT_DB_PASS";
-	
 
 	public static void main(final String[] args) {
 		logger.info("==============================================================");
@@ -40,20 +42,32 @@ public class PaymentService {
 		logger.info("                Database Name = " + System.getenv(PAYMENT_DB_NAME));
 		logger.info("                Database Port = " + System.getenv(PAYMENT_DB_PORT));
 		logger.info("                Database User = " + System.getenv(PAYMENT_DB_USER));
+		logger.info("                RabbitMQ Host = " + System.getenv(RABBITMQ_HOST));
+		logger.info("                RabbitMQ Port = " + System.getenv(RABBITMQ_PORT));
+		logger.info("                RabbitMQ User = " + System.getenv(RABBITMQ_USER));
 		logger.info("==============================================================");
-		new DBConfig(System.getenv(PAYMENT_DB_HOST),System.getenv(PAYMENT_DB_NAME),
-				     System.getenv(PAYMENT_DB_PORT),System.getenv(PAYMENT_DB_USER),
-					 System.getenv(PAYMENT_DB_PASS));
-		
+
+		// initial database configuration
+		new DBConfig(System.getenv(PAYMENT_DB_HOST), System.getenv(PAYMENT_DB_NAME), System.getenv(PAYMENT_DB_PORT),
+				System.getenv(PAYMENT_DB_USER), System.getenv(PAYMENT_DB_PASS));
+
+		// initial RabbitMQ configuration
+		new EventConfig(System.getenv(RABBITMQ_HOST), System.getenv(RABBITMQ_PORT), System.getenv(RABBITMQ_USER),
+				System.getenv(RABBITMQ_PASS));
+
+		// set port of Payment Services, default is 4567
 		String paymentPort = System.getenv(PAYMENT_PORT);
-		if(null != paymentPort){
-			port(Integer.parseInt(paymentPort)); 
+		if (null != paymentPort) {
+			port(Integer.parseInt(paymentPort));
 		}
-		get("/payment/:id","application/json", (request, response) -> {
+		
+		// inquiry payment transaction
+		get("/payment/:id", "application/json", (request, response) -> {
 			PaymentTransaction paymentTransaction = TransactionMgnt.findPaymentTransaction(request.params("id"));
 			return paymentTransaction;
 		}, new JsonTransformer());
-		
+
+		// create payment
 		post("/payment", (request, response) -> {
 			// validate input data
 			logger.info(PAYMENT + " received payment transaction - '" + request.body() + "'");
@@ -63,38 +77,23 @@ public class PaymentService {
 			logger.info(PAYMENT + " checking account.");
 			Thread.sleep((long) (randomWithRange(1, 2) * 1000));
 			logger.info(PAYMENT + " checking account - PASS. ");
-			logger.info(PAYMENT + " pay to other organiztion, sent event to Payment Gateway Service. ");
-			
+
+			// Save transaction to database
+			logger.info(PAYMENT + " save payment transaction record. ");
 			PaymentTransaction pt = TransactionMgnt.createPaymentTransaction(request.body());
-			
-			send(TransactionMgnt.encode(pt));
+
+			// publish an event
+			logger.info(PAYMENT + " pay to other organiztion, sent event to Payment Gateway Service. ");
+			EventHandler.paymentTo3rdCreatedEvent(TransactionMgnt.encode(pt));
+
+			// return response page for user
 			Map<String, Object> model = new HashMap<>();
 			model.put("paymentTrx", pt);
 			return new ModelAndView(model, "paymentResponse.vm");
 		}, new VelocityTemplateEngine());
 
 	}
-	
-	public static void send(String msg) {
-		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost(System.getenv(PAYMENT_HOST));
-		factory.setPort(5672);
-		factory.setUsername(PAYMENT_USER);
-		factory.setPassword(PAYMENT_PASS);
-		Connection connection;
-		try {
-			connection = factory.newConnection();
-			Channel channel = connection.createChannel();
-			channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-			channel.basicPublish("", QUEUE_NAME, null, msg.getBytes());
-			logger.info(" [x] Sent '" + msg +"'");
-			channel.close();
-			connection.close();
-		} catch (IOException | TimeoutException e) {
-			e.printStackTrace();
-		}
-	}
-	
+
 	static int randomWithRange(int min, int max) {
 		int range = (max - min) + 1;
 		return (int) (Math.random() * range) + min;

@@ -3,8 +3,8 @@
 	<persistence-unit name="MariaDB-JPA" transaction-type="RESOURCE_LOCAL">
 		<class>com.ktb.payment.model.PaymentTransaction</class>
 		<properties>
-			<property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/payment"/>
-			<property name="javax.persistence.jdbc.user" value="testuser2"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:mariadb://localhost:33026/payment"/>
+			<property name="javax.persistence.jdbc.user" value="testuser1"/>
 			<property name="javax.persistence.jdbc.password" value="1234asdf"/>
 			<property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
 			<property name="eclipselink.jdbc.bind-parameters" value="true"/>
