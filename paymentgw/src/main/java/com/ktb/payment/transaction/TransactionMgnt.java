@@ -32,7 +32,7 @@ public class TransactionMgnt {
 		EntityManagerFactory emf = null;
 		EntityManager em = null;
 		try {
-			emf = Persistence.createEntityManagerFactory(UNIT_NAME);
+			emf = Persistence.createEntityManagerFactory(UNIT_NAME, jpaProperties);
 			em = emf.createEntityManager();
 			em.getTransaction().begin( );
 			
