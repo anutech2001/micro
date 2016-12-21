@@ -20,7 +20,7 @@ public class PaymentServiceTest {
 
 	@Test
 	public void testCallPayment() {
-		given().when().get("http://localhost:8102/payment").then().statusCode(200);
+		given().when().get("/").then().statusCode(200);
 	}
 
 	@BeforeClass
