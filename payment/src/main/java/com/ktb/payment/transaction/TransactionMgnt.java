@@ -1,8 +1,6 @@
 package com.ktb.payment.transaction;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +11,6 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.codehaus.jackson.JsonGenerationException;
@@ -23,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ktb.payment.model.PaymentTransaction;
-import com.ktb.payment.service.PaymentService;
 
 public class TransactionMgnt {
 	private final static Logger logger = LoggerFactory.getLogger(TransactionMgnt.class);
