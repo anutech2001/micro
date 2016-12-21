@@ -20,13 +20,13 @@ public class PaymentServiceTest {
 
 	@Test
 	public void testCallPayment() {
-		given().when().get("/").then().statusCode(200);
+		given().when().get("http://localhost:4567/payment").then().statusCode(200);
 	}
 
 	@BeforeClass
 	public static void initDataPayment() {
 		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = 4567;
+		RestAssured.port = 8999;
 		RestAssured.basePath = "/payment";
 
 		payment = new PaymentTransaction();
