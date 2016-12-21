@@ -14,7 +14,7 @@
 </div>
   
 <div class="container">
-  <p><form action="http://localhost:4567/payment" method="POST" role="form" data-toggle="validator">
+  <p><form action="${paymentUrl}" method="POST" role="form" data-toggle="validator">
   <div class="row">
     <div class="col-sm-8">
       <h3>e-Payment: please enter an information.</h3>
