@@ -1,5 +1,7 @@
 package com.ktb.payment.transaction;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +30,10 @@ public class TransactionMgnt {
 																		"/" + DBConfig.getDbName());				
 	}
 	
-	public static void updatePaymentTransaction(String message){
+	public static PaymentTransaction updatePaymentTransaction(String message){
 		EntityManagerFactory emf = null;
 		EntityManager em = null;
+		PaymentTransaction trx = null;
 		try {
 			emf = Persistence.createEntityManagerFactory(UNIT_NAME, jpaProperties);
 			em = emf.createEntityManager();
@@ -45,6 +48,7 @@ public class TransactionMgnt {
 			
 			em.persist(paymentTransaction);
 		    em.getTransaction().commit( );
+		    trx = paymentTransaction;
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -52,6 +56,7 @@ public class TransactionMgnt {
 			em.close();
 			emf.close();
 		}
+	    return trx;
 	}
 	
 	public static PaymentTransaction decodePaymentTransacion(String arg){
@@ -64,5 +69,19 @@ public class TransactionMgnt {
 			e.printStackTrace();
 		}
 		return transaction;
+	}
+	
+	public static String encodePaymentTransacion(PaymentTransaction trx) {
+		ObjectMapper mapper = new ObjectMapper();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss SSS a z");
+		mapper.setDateFormat(df);
+		String trxStr = null;
+		try {
+			trxStr = mapper.writeValueAsString(trx);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return trxStr;
 	}
 }

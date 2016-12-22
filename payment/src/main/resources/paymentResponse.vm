@@ -17,7 +17,7 @@
 <div class="container" style="background-color: #87D37C; border-radius: 15px;">  
   <div class="row">
     <div class="col-sm-8">
-      <h3>e-Payment: Your payment transaction was received.</h3>
+      <h3>Your payment transaction was received.</h3>
 	</div>
   </div>	
   <div class="row">
